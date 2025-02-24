@@ -20,7 +20,7 @@ export const mockMerchants: Merchant[] = [
   {
     mid: 'MID002',
     name: 'Tech Gadgets Store',
-    status: 'BLOCK',
+    status: 'BLOCKED',
     internationalTxns: false,
     lastUpdated: '2024-03-14T15:45:00Z',
     transactionVolume: 75000,
@@ -28,7 +28,7 @@ export const mockMerchants: Merchant[] = [
   {
     mid: 'MID003',
     name: 'Fashion Boutique Ltd',
-    status: 'BLOCK',
+    status: 'BLOCKED',
     internationalTxns: false,
     lastUpdated: '2024-03-13T09:20:00Z',
     transactionVolume: 25000,

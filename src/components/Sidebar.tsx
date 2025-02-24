@@ -3,7 +3,6 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import { 
   ShieldCheck, 
   Globe2, 
-  MessageSquare, 
   LogOut, 
   Command,
   Settings,

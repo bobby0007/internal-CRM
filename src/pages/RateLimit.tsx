@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Search, Timer, AlertCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import type { RateLimit } from '../types';
+import type { RateLimit, RestrictionType } from '../types';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from "@/components/ui/card";
@@ -169,7 +169,11 @@ const RateLimit = () => {
   const handleUpdateLimit = async (aid: string, restrictionType: string, limit: number) => {
     setIsUpdating(true);
     try {
-      const response = await ApiService.updateRateLimit(aid, restrictionType, limit);
+      const response = await ApiService.updateRateLimit(
+        aid, 
+        restrictionType as RestrictionType, 
+        limit
+      );
       
       if (response.statusCode === 200) {
         setRateLimits(prev => prev.map(rateLimit => 

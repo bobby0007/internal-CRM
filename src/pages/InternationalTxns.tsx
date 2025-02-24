@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Globe2, Search, AlertCircle } from 'lucide-react';
+import { Globe2, Search } from 'lucide-react';
 import { clsx } from 'clsx';
 import type { Merchant, MerchantStatus } from '../types';
 import StatusBadge from '../components/StatusBadge';

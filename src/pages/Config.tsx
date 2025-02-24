@@ -205,7 +205,7 @@ const Config = () => {
             ? { 
                 ...config, 
                 value: value.toString().toUpperCase(),
-                status
+                status: status as "ACTIVE" | "INACTIVE"
               }
             : config
         ));

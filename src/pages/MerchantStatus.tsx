@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { ShieldCheck, Ban, Search, AlertTriangle, CheckCircle2 } from 'lucide-react';
-import { cn } from "@/lib/utils";
 import type { Merchant, MerchantStatus as MerchantStatusType } from '../types';
 import StatusBadge from '../components/StatusBadge';
 import { Button } from '@/components/ui/button';
