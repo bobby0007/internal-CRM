@@ -1,8 +1,14 @@
 {
   "rewrites": [
-    {
-      "source": "/(.*)",
-      "destination": "/index.html"
-    }
+    { "source": "/login", "destination": "/" },
+    { "source": "/dashboard", "destination": "/" },
+    { "source": "/merchants", "destination": "/" },
+    { "source": "/international-txns", "destination": "/" },
+    { "source": "/rate-limit", "destination": "/" },
+    { "source": "/(.*)", "destination": "/" }
+  ],
+  "routes": [
+    { "handle": "filesystem" },
+    { "src": "/(.*)", "dest": "/" }
   ]
 } 
