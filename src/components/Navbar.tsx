@@ -10,7 +10,9 @@ import {
   Bell,
   Search,
   Timer,
-  Sliders
+  Sliders,
+  MessageSquare,
+  FileCode
 } from 'lucide-react';
 import { cn } from "@/lib/utils";
 import { Button } from '@/components/ui/button';
@@ -23,7 +25,8 @@ const Navbar = () => {
   const navItems = [
     { path: '/', label: 'Merchant Status', icon: ShieldCheck },
     { path: '/international', label: 'International Txns', icon: Globe2 },
-    // { path: '/template', label: 'Communication Center', icon: MessageSquare },
+    { path: '/communications', label: 'Communications', icon: MessageSquare },
+    { path: '/template-config', label: 'Template Config', icon: FileCode },
     { path: '/rate-limit', label: 'Rate Limits', icon: Timer },
     { path: '/config', label: 'Configuration', icon: Sliders },
   ];

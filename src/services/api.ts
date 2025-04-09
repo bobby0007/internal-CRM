@@ -1,10 +1,21 @@
 import { API_BASE_URL, API_ENDPOINTS } from '../constants/api';
-import type { RateLimit, RestrictionType, MerchantConfig } from '../types';
+import type { RateLimit, RestrictionType, MerchantConfig, TemplateCatalogRequest, TemplateUpdateRequest } from '../types';
 
 interface ApiResponse<T> {
   statusCode: number;
   data: T;
   message?: string;
+}
+
+interface CreatePartnerResponse {
+  success: boolean;
+  message: string;
+}
+
+interface GetTemplateCatalogResponse {
+  buttonEnabled: boolean;
+  loadBalancingEnabled: boolean;
+  loadBalanceTemplates: Record<string, Array<{ templateCode: string; trafficSplit: number }>>;
 }
 
 interface MerchantDetailsResponse {
@@ -44,6 +55,27 @@ class ApiService {
     return this.fetchApi<MerchantDetailsResponse>(API_ENDPOINTS.MERCHANT.GET_DETAILS, {
       method: 'POST',
       body: JSON.stringify({ mid }),
+    });
+  }
+
+  static async updateTemplateCatalog(request: TemplateUpdateRequest): Promise<ApiResponse<any>> {
+    return this.fetchApi(API_ENDPOINTS.TEMPLATE.UPDATE, {
+      method: 'POST',
+      body: JSON.stringify(request),
+    });
+  }
+
+  static async getTemplateCatalog(request: TemplateCatalogRequest): Promise<ApiResponse<GetTemplateCatalogResponse>> {
+    return this.fetchApi(API_ENDPOINTS.TEMPLATE.GET_CATALOG, {
+      method: 'POST',
+      body: JSON.stringify(request),
+    });
+  }
+
+  static async createPartner(template: any): Promise<ApiResponse<CreatePartnerResponse>> {
+    return this.fetchApi('/v1/partners/create', {
+      method: 'POST',
+      body: JSON.stringify(template),
     });
   }
 

@@ -16,5 +16,9 @@ export const API_ENDPOINTS = {
   },
   AUTH: {
     LOGIN: '/auth/login',
+  },
+  TEMPLATE: {
+    GET_CATALOG: '/dashboard/v3/crm/get-merchant-template-catalog-info',
+    UPDATE: '/dashboard/v3/crm/update-merchant-template-catalog-info'
   }
 } as const;

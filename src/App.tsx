@@ -4,7 +4,8 @@ import Sidebar from '@/components/Sidebar';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import MerchantStatus from '@/pages/MerchantStatus';
 import InternationalTxns from '@/pages/InternationalTxns';
-import TemplateForm from '@/pages/TemplateForm';
+import Communications from '@/pages/Communications';
+import TemplateConfig from '@/pages/TemplateConfig';
 import RateLimit from '@/pages/RateLimit';
 import Config from '@/pages/Config';
 import { ToastProvider } from "@/components/ui/toast";
@@ -70,25 +71,6 @@ function App() {
           />
           
           <Route
-            path="/template"
-            element={
-              <ProtectedRoute>
-                <div className="min-h-screen bg-gray-100">
-                  <div className="flex h-screen">
-                    <Sidebar className="hidden lg:block" />
-                    <div className="flex-1 flex flex-col overflow-hidden">
-                      <Navbar />
-                      <main className="flex-1 overflow-y-auto">
-                        <TemplateForm />
-                      </main>
-                    </div>
-                  </div>
-                </div>
-              </ProtectedRoute>
-            }
-          />
-
-          <Route
             path="/rate-limit"
             element={
               <ProtectedRoute>
@@ -118,6 +100,44 @@ function App() {
                       <Navbar />
                       <main className="flex-1 overflow-y-auto">
                         <Config />
+                      </main>
+                    </div>
+                  </div>
+                </div>
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/template-config"
+            element={
+              <ProtectedRoute>
+                <div className="min-h-screen bg-gray-100">
+                  <div className="flex h-screen">
+                    <Sidebar className="hidden lg:block" />
+                    <div className="flex-1 flex flex-col overflow-hidden">
+                      <Navbar />
+                      <main className="flex-1 overflow-y-auto">
+                        <TemplateConfig />
+                      </main>
+                    </div>
+                  </div>
+                </div>
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/communications"
+            element={
+              <ProtectedRoute>
+                <div className="min-h-screen bg-gray-100">
+                  <div className="flex h-screen">
+                    <Sidebar className="hidden lg:block" />
+                    <div className="flex-1 flex flex-col overflow-hidden">
+                      <Navbar />
+                      <main className="flex-1 overflow-y-auto">
+                        <Communications />
                       </main>
                     </div>
                   </div>

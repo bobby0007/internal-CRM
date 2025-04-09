@@ -48,6 +48,60 @@ export interface OtplessUser {
 export type TimeUnit = 'MINUTES' | 'HOUR' | 'DAY';
 export type RestrictionType = 'STATE' | 'APP_ID' | 'IP' | 'USER_ID';
 
+export interface TemplateInfo {
+  templateCode: string;
+  trafficSplit: number;
+}
+
+
+
+export type GetTemplateCatalogResponse = {
+  buttonEnabled?: boolean;
+  loadBalancingEnabled?: boolean;
+  loadBalanceTemplates?: Record<string, TemplateInfo[]>;
+  statusCode?: number;
+  message?: string;
+};
+
+export interface TemplateUpdateDetails {
+  buttonEnabled: boolean;
+  loadBalancingEnabled: boolean;
+  loadBalanceTemplates: Record<string, TemplateInfo[]>;
+}
+
+export interface TemplateUpdateRequest {
+  aid: string;
+  channel: string;
+  communicationMode: string;
+  defaultTemplateCode: string;
+  updateDetails: TemplateUpdateDetails;
+}
+
+export interface TemplateCatalogRequest {
+  aid: string;
+  channel: string;
+  communicationMode: string;
+}
+
+export interface CommunicationTemplate {
+  appId: string;
+  body: string;
+  channel: 'WHATSAPP' | 'SMS';
+  merchantName: string;
+  templateType: 'SERVICE_IMPLICT' | 'SERVICE_EXPLICIT' | 'AUTHENTICATION';
+  // SMS specific fields
+  peId?: string;
+  header?: string;
+  // WhatsApp specific fields
+  partnerAppId?: string;
+  partnerAppToken?: string;
+  whatsappNumber?: string;
+  partnerName?: string;
+  // Optional fields
+  gatewayName?: string;
+  templateId?: string;
+}
+
 export interface RateLimit {
   restrictionType: RestrictionType;
   status: 'ACTIVE' | 'INACTIVE';
