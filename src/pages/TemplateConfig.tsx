@@ -71,7 +71,7 @@ const TemplateConfig = () => {
     setError(null);
     try {
       const response = await ApiService.getTemplateCatalog(request);
-      
+      console.log('Template Catalog Response:', response);
       // If we get a success response with no data or empty data, initialize with empty config
       if (!response.data || (!response.data.buttonEnabled && !response.data.loadBalancingEnabled)) {
         const emptyConfig: GetTemplateCatalogResponse = {
