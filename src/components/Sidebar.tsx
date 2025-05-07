@@ -30,6 +30,7 @@ const Sidebar: React.FC<SidebarProps> = ({ className }) => {
     { path: '/template-config', label: 'Template Config', icon: FileCode },
     { path: '/rate-limit', label: 'Rate Limits', icon: Timer },
     { path: '/config', label: 'Configuration', icon: Sliders },
+    { path: '/silent-auth-config', label: 'Silent Auth Config', icon: LogOut }, // You can swap LogOut for a more suitable icon
   ];
 
   const handleLogout = () => {

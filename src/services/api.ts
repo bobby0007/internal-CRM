@@ -25,6 +25,13 @@ interface MerchantDetailsResponse {
 }
 
 class ApiService {
+  static async saveSilentAuthConfig(request: { aid: string; userName: string; password: string; refreshToken: string }): Promise<ApiResponse<any>> {
+    return this.fetchApi('/dashboard/v3/crm/save-silent-auth-config', {
+      method: 'POST',
+      body: JSON.stringify(request),
+      headers: this.getHeaders(),
+    });
+  }
   private static readonly TOKEN = '598da28e72644f3b82b080fb7b32f8b7';
 
   private static getHeaders() {
