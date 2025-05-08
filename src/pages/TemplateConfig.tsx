@@ -186,16 +186,7 @@ const TemplateConfig = () => {
       return;
     }
 
-    // Validate traffic split
-    const currentTotal = existingTemplates.reduce((sum, t) => sum + t.trafficSplit, 0);
-    if (currentTotal + newTemplate.trafficSplit > 100) {
-      toast({
-        title: 'Error',
-        description: 'Total traffic split cannot exceed 100%',
-        variant: 'destructive',
-      });
-      return;
-    }
+    // No validation on add template button - validation will happen on final save button
     
     const templates = [...existingTemplates];
     templates.push({
@@ -269,20 +260,7 @@ const TemplateConfig = () => {
       return;
     }
 
-    // Calculate total traffic split excluding current template
-    const otherTemplatesTotal = templates.reduce((sum, t, idx) => 
-      idx === editingTemplate.index ? sum : sum + t.trafficSplit
-    , 0);
-
-    // Check if new total would exceed 100%
-    if (otherTemplatesTotal + editingTemplate.trafficSplit > 100) {
-      toast({
-        title: 'Error',
-        description: 'Total traffic split cannot exceed 100%',
-        variant: 'destructive',
-      });
-      return;
-    }
+    // No validation on the edit template button - validation will happen on final save button
     
     templates[editingTemplate.index] = {
       templateCode: editingTemplate.templateCode.trim(),
@@ -354,7 +332,7 @@ const TemplateConfig = () => {
           <div className="space-y-4">
             {sortedTemplates.map((template, index) => (
               <div key={`${template.templateCode}-${index}`} className="flex items-center justify-between p-3 bg-secondary/10 rounded-lg">
-                {editingTemplate && editingTemplate.countryCode === countryCode && editingTemplate.index === index ? (
+                {editingTemplate && editingTemplate.countryCode === countryCode && editingTemplate.templateCode === template.templateCode ? (
                   <div className="flex items-center space-x-4 w-full">
                     <Input
                       value={editingTemplate.templateCode}
@@ -371,9 +349,10 @@ const TemplateConfig = () => {
                       type="number"
                       value={editingTemplate.trafficSplit}
                       onChange={(e) => {
+                        const value = e.target.value === '' ? 0 : parseInt(e.target.value);
                         setEditingTemplate({
                           ...editingTemplate,
-                          trafficSplit: parseInt(e.target.value) || 0
+                          trafficSplit: isNaN(value) ? 0 : value
                         });
                       }}
                       placeholder="Traffic Split"
@@ -402,7 +381,7 @@ const TemplateConfig = () => {
                       <Button
                         variant="ghost"
                         size="sm"
-                        onClick={() => handleEditTemplate(countryCode, template, index)}
+                        onClick={() => handleEditTemplate(countryCode, templates[sortedIndices[index]], sortedIndices[index])}
                       >
                         Edit
                       </Button>
