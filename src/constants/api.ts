@@ -1,4 +1,4 @@
-export const API_BASE_URL = 'https://metaverse-pp.otpless.app';
+export const API_BASE_URL = 'https://metaverse.otpless.app';
 
 export const API_ENDPOINTS = {
   MERCHANT: {
