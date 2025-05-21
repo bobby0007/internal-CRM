@@ -34,7 +34,6 @@ const CountryCodeRateLimit: React.FC<CountryCodeRateLimitProps> = ({ limitList, 
     const requestValue = parseInt(newRequest);
     if (newCountryCode && !isNaN(requestValue) && requestValue > 0) {
       // Get the first item's value and unit to maintain consistency
-      const template = limitList[0];
       onUpdate(newCountryCode, requestValue);
       setShowAddForm(false);
       setNewCountryCode('');
