@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { Search, Timer, AlertCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import type { RateLimit, RestrictionType } from '../types';
+import type { RateLimit, RestrictionType, RateLimitCountryCodeLimit } from '../types';
+import CountryCodeRateLimit from './CountryCodeRateLimit';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from "@/components/ui/card";
@@ -31,7 +32,7 @@ const RateLimitCard = ({
   onUpdate: (aid: string, restrictionType: string, limit: number) => void;
   isUpdating: boolean;
 }) => {
-  const [newRequest, setNewRequest] = useState(limit.limits.request.toString());
+  const [newRequest, setNewRequest] = useState(limit.limits ? limit.limits.request.toString() : '');
   const [isEditing, setIsEditing] = useState(false);
 
   const handleSubmit = () => {
@@ -69,22 +70,28 @@ const RateLimitCard = ({
         </span>
       </div>
 
-      <div className="bg-gray-50 rounded-md p-3">
-        <div className="flex items-center justify-between">
-          <div className="text-sm">
-            <span className="text-gray-500">Limit:</span>{' '}
-            <span className="font-medium">
-              {limit.limits.request} requests
-            </span>
-          </div>
-          <div className="text-sm">
-            <span className="text-gray-500">Per:</span>{' '}
-            <span className="font-medium">
-              {limit.limits.value} {limit.limits.unit.toLowerCase()}
-            </span>
+      {limit.limits ? (
+        <div className="bg-gray-50 rounded-md p-3">
+          <div className="flex items-center justify-between">
+            <div className="text-sm">
+              <span className="text-gray-500">Limit:</span>{' '}
+              <span className="font-medium">
+                {limit.limits.request} requests
+              </span>
+            </div>
+            <div className="text-sm">
+              <span className="text-gray-500">Per:</span>{' '}
+              <span className="font-medium">
+                {limit.limits.value} {limit.limits.unit.toLowerCase()}
+              </span>
+            </div>
           </div>
         </div>
-      </div>
+      ) : (
+        <div className="bg-gray-50 rounded-md p-3 text-sm text-gray-400 text-center">
+          No limit data available.
+        </div>
+      )}
 
       <div className="flex items-center gap-2 pt-2">
         {isEditing ? (
@@ -109,7 +116,7 @@ const RateLimitCard = ({
               variant="ghost"
               onClick={() => {
                 setIsEditing(false);
-                setNewRequest(limit.limits.request.toString());
+                setNewRequest(limit.limits ? limit.limits.request.toString() : '');
               }}
             >
               Cancel
@@ -169,19 +176,24 @@ const RateLimit = () => {
   const handleUpdateLimit = async (aid: string, restrictionType: string, limit: number) => {
     setIsUpdating(true);
     try {
+      // For regular restriction types, send limits as [{ request: limit }]
       const response = await ApiService.updateRateLimit(
-        aid, 
-        restrictionType as RestrictionType, 
-        limit
+        aid,
+        restrictionType as RestrictionType,
+        [{ request: limit }]
       );
-      
+
       if (response.statusCode === 200) {
-        setRateLimits(prev => prev.map(rateLimit => 
+        setRateLimits(prev => prev.map(rateLimit =>
           rateLimit.restrictionType === restrictionType
-            ? { ...rateLimit, limits: { ...rateLimit.limits, request: limit } }
+            ? {
+                ...rateLimit,
+                limits: rateLimit.limits
+                  ? { ...rateLimit.limits, request: limit }
+                  : null
+              }
             : rateLimit
         ));
-        
         toast({
           title: "Rate Limit Updated",
           description: "The rate limit has been successfully updated.",
@@ -203,6 +215,46 @@ const RateLimit = () => {
       setIsUpdating(false);
     }
   };
+
+  // Handler for updating COUNTRY_CODE limits
+  const handleUpdateCountryCodeLimits = async (aid: string, newLimitList: RateLimitCountryCodeLimit[]) => {
+    setIsUpdating(true);
+    try {
+      const response = await ApiService.updateRateLimit(
+        aid,
+        'COUNTRY_CODE',
+        newLimitList
+      );
+      if (response.statusCode === 200) {
+        setRateLimits(prev =>
+          prev.map(rateLimit =>
+            rateLimit.restrictionType === 'COUNTRY_CODE'
+              ? { ...rateLimit, limitList: newLimitList }
+              : rateLimit
+          )
+        );
+        toast({
+          title: "Country Code Rate Limits Updated",
+          description: "The country code rate limits have been successfully updated.",
+        });
+      } else {
+        toast({
+          title: "Update Failed",
+          description: "Failed to update the country code rate limits. Please try again.",
+          variant: "destructive",
+        });
+      }
+    } catch (err) {
+      toast({
+        title: "Error",
+        description: "An error occurred while updating the country code rate limits.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsUpdating(false);
+    }
+  };
+
 
   return (
     <div className="container mx-auto px-4 py-6">
@@ -261,19 +313,70 @@ const RateLimit = () => {
                   </CardContent>
                 </Card>
               ) : (
-                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                  <AnimatePresence>
-                    {rateLimits.map((limit) => (
-                      <RateLimitCard
-                        key={limit.id}
-                        limit={limit}
-                        aid={searchInput.trim()}
-                        onUpdate={handleUpdateLimit}
-                        isUpdating={isUpdating}
-                      />
-                    ))}
-                  </AnimatePresence>
-                </div>
+                <>
+                  {/* Render other limits as cards */}
+                  <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                    <AnimatePresence>
+                      {rateLimits.filter(l => l.restrictionType !== 'COUNTRY_CODE').map((limit) => (
+                        <RateLimitCard
+                          key={limit.id}
+                          limit={limit}
+                          aid={searchInput.trim()}
+                          onUpdate={handleUpdateLimit}
+                          isUpdating={isUpdating}
+                        />
+                      ))}
+                    </AnimatePresence>
+                  </div>
+                  {/* Render COUNTRY_CODE limits as a table below */}
+                  {rateLimits.filter(l => l.restrictionType === 'COUNTRY_CODE' && l.limitList && l.limitList.length > 0).map((limit) => (
+                    <CountryCodeRateLimit
+                      key={limit.id}
+                      limitList={limit.limitList as RateLimitCountryCodeLimit[]}
+                      isUpdating={isUpdating}
+                      onUpdate={(countryCode, request) => {
+                        // Get existing limitList or empty array if null
+                        const currentLimitList = limit.limitList ?? [];
+                        
+                        // Find if country code already exists
+                        const existingIndex = currentLimitList.findIndex(item => item.countryCode === countryCode);
+                        
+                        let newLimitList: RateLimitCountryCodeLimit[];
+                        
+                        if (existingIndex >= 0) {
+                          // Update existing country code
+                          newLimitList = currentLimitList.map(item =>
+                            item.countryCode === countryCode
+                              ? {
+                                  ...item,
+                                  request
+                                }
+                              : item
+                          );
+                        } else {
+                          // Add new country code
+                          // Use the first item's value and unit, or defaults if no items exist
+                          const template = currentLimitList[0] ?? {
+                            value: 1,
+                            unit: 'MINUTES' as const
+                          };
+                          
+                          newLimitList = [
+                            ...currentLimitList,
+                            {
+                              countryCode,
+                              request,
+                              value: template.value,
+                              unit: template.unit
+                            }
+                          ];
+                        }
+                        
+                        handleUpdateCountryCodeLimits(searchInput.trim(), newLimitList);
+                      }}
+                    />
+                  ))}
+                </>
               )}
             </>
           )}

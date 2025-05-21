@@ -102,15 +102,28 @@ export interface CommunicationTemplate {
   templateId?: string;
 }
 
+export interface RateLimitLimit {
+  value: number;
+  unit: TimeUnit;
+  request: number;
+}
+
+export interface RateLimitCountryCodeLimit extends RateLimitLimit {
+  countryCode: string;
+}
+
 export interface RateLimit {
-  restrictionType: RestrictionType;
+  restrictionType: RestrictionType | 'COUNTRY_CODE';
   status: 'ACTIVE' | 'INACTIVE';
   id: number;
-  limits: {
-    value: number;
-    unit: TimeUnit;
-    request: number;
-  };
+  limits: RateLimitLimit | null;
+  limitList?: RateLimitCountryCodeLimit[] | null;
+}
+
+export interface RateLimitDetailsResponse {
+  message: string;
+  statusCode: number;
+  data: RateLimit[];
 }
 
 export interface MerchantConfig {

@@ -7,8 +7,8 @@ export const API_ENDPOINTS = {
     UPDATE_INTERNATIONAL: '/dashboard/v3/crm/update-international-merchant-details'
   },
   RATE_LIMIT: {
-    GET_INFO: '/dashboard/v3/crm/get-rate-limit-info',
-    UPDATE: '/dashboard/v3/crm/update-rate-limit-info'
+    GET_INFO: '/dashboard/v3/crm/get-rate-limit-details',
+    UPDATE: '/dashboard/v3/crm/update-rate-limit-details'
   },
   CONFIG: {
     GET_INFO: '/dashboard/v3/crm/get-merchant-config-info',

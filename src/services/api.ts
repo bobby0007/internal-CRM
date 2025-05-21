@@ -110,13 +110,17 @@ class ApiService {
     });
   }
 
-  static async updateRateLimit(aid: string, restrictionType: RestrictionType, limit: number): Promise<ApiResponse<any>> {
+  static async updateRateLimit(
+    aid: string,
+    restrictionType: RestrictionType | 'COUNTRY_CODE',
+    limits: Array<{ request: number; countryCode?: string }>
+  ): Promise<ApiResponse<any>> {
     return this.fetchApi(API_ENDPOINTS.RATE_LIMIT.UPDATE, {
       method: 'POST',
-      body: JSON.stringify({ 
+      body: JSON.stringify({
         aid,
         restrictionType,
-        limit
+        limits,
       }),
     });
   }
