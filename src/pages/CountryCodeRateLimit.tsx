@@ -13,7 +13,7 @@ interface CountryCodeRateLimitProps {
 const CountryCodeRateLimit: React.FC<CountryCodeRateLimitProps> = ({ limitList, isUpdating, onUpdate }) => {
   const [editIdx, setEditIdx] = useState<number | null>(null);
   const [editValue, setEditValue] = useState<string>('');
-  const [showAddForm, setShowAddForm] = useState(false);
+  const [showAddForm, setShowAddForm] = useState(limitList.length === 0);
   const [newCountryCode, setNewCountryCode] = useState('');
   const [newRequest, setNewRequest] = useState('');
 

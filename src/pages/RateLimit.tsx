@@ -226,13 +226,11 @@ const RateLimit = () => {
         newLimitList
       );
       if (response.statusCode === 200) {
-        setRateLimits(prev =>
-          prev.map(rateLimit =>
-            rateLimit.restrictionType === 'COUNTRY_CODE'
-              ? { ...rateLimit, limitList: newLimitList }
-              : rateLimit
-          )
-        );
+        // Refresh the rate limits to get the updated data from server
+        const refreshResponse = await ApiService.getRateLimitInfo(aid);
+        if (refreshResponse.statusCode === 200) {
+          setRateLimits(refreshResponse.data);
+        }
         toast({
           title: "Country Code Rate Limits Updated",
           description: "The country code rate limits have been successfully updated.",
@@ -380,6 +378,28 @@ const RateLimit = () => {
               )}
             </>
           )}
+        </div>
+      )}
+      {!rateLimits.some(limit => limit.restrictionType === 'COUNTRY_CODE') && (
+        <div className="mt-6 p-6 border border-dashed rounded-lg bg-gray-50">
+          <div className="text-center">
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">Add Country Code Rate Limits</h3>
+            <p className="text-sm text-gray-500 mb-4">Create country-specific rate limits for your application</p>
+            <CountryCodeRateLimit
+              limitList={[]}
+              isUpdating={isUpdating}
+              onUpdate={(countryCode, request) => {
+                handleUpdateCountryCodeLimits(searchInput.trim(), [
+                  {
+                    countryCode,
+                    request,
+                    value: 1,
+                    unit: 'HOUR'
+                  }
+                ]);
+              }}
+            />
+          </div>
         </div>
       )}
     </div>
