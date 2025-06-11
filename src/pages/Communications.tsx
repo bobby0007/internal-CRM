@@ -45,7 +45,7 @@ const Communications = () => {
 			toast({
 				title: "Error",
 				description:
-					error instanceof Error ? error.message : "Failed to create template",
+					error instanceof Error ? error.message : "Failed to create template!",
 				variant: "destructive",
 			});
 		} finally {
