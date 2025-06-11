@@ -24,7 +24,7 @@ const Communications = () => {
 		merchantName: "",
 		templateType: "SERVICE_IMPLICT",
 		peId: "",
-		header: "",
+		senderId: "",
 		gatewayName: "",
 		templateId: "",
 		mid: "",
@@ -192,13 +192,13 @@ const Communications = () => {
 												/>
 											</div>
 											<div className="space-y-2">
-												<label className="text-sm font-medium">Header</label>
+												<label className="text-sm font-medium">Sender ID</label>
 												<Input
-													value={template.header}
+													value={template.senderId}
 													onChange={(e) =>
-														handleChange("header", e.target.value)
+														handleChange("senderId", e.target.value)
 													}
-													placeholder="Enter Header"
+													placeholder="Enter Sender ID"
 													required
 												/>
 											</div>

@@ -44,7 +44,7 @@ export interface ICreateTemplate {
 	mid: string;
 	// SMS
 	peId?: string;
-	header?: string;
+	senderId?: string;
 	// WhatsApp
 	partnerAppId?: string;
 	partnerAppToken?: string;
