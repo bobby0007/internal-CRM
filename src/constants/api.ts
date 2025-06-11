@@ -1,24 +1,26 @@
-export const API_BASE_URL = 'https://metaverse.otpless.app';
+export const API_BASE_URL =
+	"https://metaverse-pp.otpless.app/internal-dashboard/";
 
 export const API_ENDPOINTS = {
-  MERCHANT: {
-    GET_DETAILS: '/dashboard/v3/crm/get-merchant-details',
-    UPDATE_DETAILS: '/dashboard/v3/crm/update-merchant-details',
-    UPDATE_INTERNATIONAL: '/dashboard/v3/crm/update-international-merchant-details'
-  },
-  RATE_LIMIT: {
-    GET_INFO: '/dashboard/v3/crm/get-rate-limit-details',
-    UPDATE: '/dashboard/v3/crm/update-rate-limit-details'
-  },
-  CONFIG: {
-    GET_INFO: '/dashboard/v3/crm/get-merchant-config-info',
-    UPDATE: '/dashboard/v3/crm/update-merchant-config-info'
-  },
-  AUTH: {
-    LOGIN: '/auth/login',
-  },
-  TEMPLATE: {
-    GET_CATALOG: '/dashboard/v3/crm/get-merchant-template-catalog-info',
-    UPDATE: '/dashboard/v3/crm/update-merchant-template-catalog-info'
-  }
+	MERCHANT: {
+		GET_DETAILS: "merchant-details/get",
+		UPDATE_DETAILS: "merchant-details/update",
+		UPDATE_INTERNATIONAL: "merchant-details/update-international",
+	},
+	RATE_LIMIT: {
+		GET_INFO: "rate-limit/get",
+		UPDATE: "rate-limit/update",
+	},
+	CONFIG: {
+		GET_INFO: "merchant-config/get",
+		UPDATE: "merchant-config/update",
+	},
+	AUTH: {
+		LOGIN: "/auth/login",
+	},
+	TEMPLATE: {
+		GET_CATALOG: "template/catalog/get",
+		UPDATE: "template/catalog/update",
+		CREATE: "template/create",
+	},
 } as const;
