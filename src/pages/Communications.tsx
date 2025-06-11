@@ -10,18 +10,19 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
 import { AnimatePresence, LayoutGroup, motion } from "framer-motion";
-import { MessageSquare } from "lucide-react";
+import { Check, Copy, MessageSquare } from "lucide-react";
 import React, { useState } from "react";
 import ApiService, { ICreateTemplate } from "../services/api";
 
 const Communications = () => {
 	const { toast } = useToast();
 	const [isLoading, setIsLoading] = useState(false);
+	const [templateCode, setTemplateCode] = useState<string | null>(null);
+	const [copied, setCopied] = useState(false);
 	const [template, setTemplate] = useState<ICreateTemplate>({
 		appId: "",
 		body: "",
 		channel: "SMS",
-		merchantName: "",
 		templateType: "SERVICE_IMPLICT",
 		peId: "",
 		senderId: "",
@@ -30,24 +31,30 @@ const Communications = () => {
 		mid: "",
 	});
 
+	const throwError = (error: Error) => {
+		toast({
+			title: "Error",
+			description:
+				error instanceof Error ? error.message : "Failed to create template!",
+			variant: "destructive",
+			duration: 5000,
+		});
+	};
+
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
 		setIsLoading(true);
+		setTemplateCode(null);
 		try {
 			const response = await ApiService.createCommunicationTemplate(template);
-			toast({
-				title: "Success",
-				description: response.data.message || "Template created successfully",
-				variant: "default",
-			});
+
+			if (!response.data.success)
+				return throwError(new Error(response.data.message));
+
+			if (response.data?.data?.templateCode)
+				setTemplateCode(response.data.data.templateCode);
 		} catch (error) {
-			console.error("Error creating template:", error);
-			toast({
-				title: "Error",
-				description:
-					error instanceof Error ? error.message : "Failed to create template!",
-				variant: "destructive",
-			});
+			throwError(error as Error);
 		} finally {
 			setIsLoading(false);
 		}
@@ -57,8 +64,41 @@ const Communications = () => {
 		setTemplate((prev) => ({ ...prev, [field]: value }));
 	};
 
+	const copyToClipboard = () => {
+		if (templateCode) {
+			navigator.clipboard.writeText(templateCode);
+			setCopied(true);
+			setTimeout(() => setCopied(false), 2000);
+		}
+	};
+
 	return (
 		<div className="container mx-auto p-6">
+			{templateCode && (
+				<motion.div
+					initial={{ opacity: 0, y: -20 }}
+					animate={{ opacity: 1, y: 0 }}
+					className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6 flex items-center justify-between"
+				>
+					<div>
+						<p className="font-medium text-green-800">Template Code:</p>
+						<p className="font-mono text-green-700 text-lg">{templateCode}</p>
+					</div>
+					<Button
+						variant="outline"
+						size="sm"
+						className="flex items-center gap-1"
+						onClick={copyToClipboard}
+					>
+						{copied ? (
+							<Check className="h-4 w-4" />
+						) : (
+							<Copy className="h-4 w-4" />
+						)}
+						{copied ? "Copied!" : "Copy Code"}
+					</Button>
+				</motion.div>
+			)}
 			<div className="flex items-center gap-2 mb-6">
 				<MessageSquare className="h-6 w-6" />
 				<h1 className="text-2xl font-bold">Communications</h1>
@@ -67,37 +107,22 @@ const Communications = () => {
 			<div className="bg-white shadow-md rounded-lg p-6">
 				<form onSubmit={handleSubmit} className="space-y-6">
 					<LayoutGroup>
+						<motion.div
+							layout
+							initial={{ opacity: 0 }}
+							animate={{ opacity: 1 }}
+							className="space-y-2"
+						>
+							<label className="text-sm font-medium">App ID</label>
+							<Input
+								value={template.appId}
+								onChange={(e) => handleChange("appId", e.target.value)}
+								placeholder="Enter App ID"
+								required
+							/>
+						</motion.div>
 						<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 							{/* Mandatory Fields */}
-							<motion.div
-								layout
-								initial={{ opacity: 0 }}
-								animate={{ opacity: 1 }}
-								className="space-y-2"
-							>
-								<label className="text-sm font-medium">App ID</label>
-								<Input
-									value={template.appId}
-									onChange={(e) => handleChange("appId", e.target.value)}
-									placeholder="Enter App ID"
-									required
-								/>
-							</motion.div>
-
-							<motion.div
-								layout
-								initial={{ opacity: 0 }}
-								animate={{ opacity: 1 }}
-								className="space-y-2"
-							>
-								<label className="text-sm font-medium">Merchant Name</label>
-								<Input
-									value={template.merchantName}
-									onChange={(e) => handleChange("merchantName", e.target.value)}
-									placeholder="Enter Merchant Name"
-									required
-								/>
-							</motion.div>
 
 							<motion.div
 								layout

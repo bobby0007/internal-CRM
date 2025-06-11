@@ -35,7 +35,6 @@ interface MerchantDetailsResponse {
 
 export interface ICreateTemplate {
 	appId: string;
-	merchantName: string;
 	channel: string;
 	templateType: string;
 	body: string;
